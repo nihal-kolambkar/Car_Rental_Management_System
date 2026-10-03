@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In | LCR</title>
+  <meta name="description" content="Sign in to your LCR account to manage your bookings.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo"><img src="images/lcr_logo.png" alt="LCR Logo" style="height: 35px;"></a>
+    <nav id="navbar">
+      <a href="index.html">Home</a>
+      <a href="cars.html">Fleet</a>
+      <a href="customer-bookings.html">My Bookings</a>
+      <a href="about.html">About</a>
+      <a href="login.html" class="active">Customer Login</a>
+      <a href="admin-login.html">Admin Login</a>
+      <a href="register.html" class="btn-primary" style="padding: 0.5rem 1rem;">Register</a>
+    </nav>
+    <button id="menuToggle">☰</button>
+  </header>
+
+  <main>
+    <div class="auth-container">
+      <div class="auth-card">
+        <h2>Welcome Back</h2>
+        <p>Enter your credentials to access your account</p>
+        
+        <form id="customerLoginForm">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="you@example.com" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="password" placeholder="••••••••" required>
+              <button type="button" class="toggle-password" aria-label="Toggle password visibility">👁️</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="loginLicenseUpload">Driving License Picture</label>
+            <input type="file" id="loginLicenseUpload" accept="image/jpeg, image/png, image/webp" style="width: 100%; padding: 0.8rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-secondary); box-sizing: border-box; cursor: pointer;">
+          </div>
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; font-size: 0.9rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+              <input type="checkbox" style="width: auto;"> Remember me
+            </label>
+            <a href="#" style="color: var(--accent); text-decoration: none;">Forgot Password?</a>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width: 100%;">Sign In</button>
+        </form>
+        
+        <div style="text-align: center; margin-top: 2rem; color: var(--text-secondary); font-size: 0.9rem;">
+          Don't have an account? <a href="register.html" style="color: var(--accent); text-decoration: none; font-weight: 500;">Register here</a>
+          <br><br>
+          <a href="admin-login.html" style="color: var(--text-secondary); text-decoration: none; font-size: 0.8rem; opacity: 0.7;">Administrator Access</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/app.js?v=2"></script>
+</body>
+</html>

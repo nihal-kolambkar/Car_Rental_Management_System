@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Requests | LCR Admin</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body { display: flex; min-height: 100vh; background-color: var(--bg-primary); margin: 0; }
+    .sidebar { width: 250px; background: var(--bg-secondary); border-right: 1px solid var(--border-color); padding: 2rem 1rem; position: fixed; height: 100vh; overflow-y: auto; }
+    .main-content { flex: 1; margin-left: 250px; padding: 2rem; }
+    .sidebar-nav { list-style: none; padding: 0; margin-top: 2rem; }
+    .sidebar-nav li { margin-bottom: 0.5rem; }
+    .sidebar-nav a { display: block; padding: 1rem; color: var(--text-secondary); text-decoration: none; border-radius: 8px; transition: var(--transition); }
+    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+    .sidebar-nav a.active { border-left: 4px solid #d4af37; }
+    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+    
+    .form-panel { background: var(--bg-secondary); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 2rem; }
+    
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+    th { color: var(--text-secondary); font-weight: 500; }
+    tr:hover { background: rgba(255,255,255,0.02); }
+    
+    .status-pending { color: #f59e0b; background: rgba(245, 158, 11, 0.1); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem; }
+    .status-approved { color: #10b981; background: rgba(16, 185, 129, 0.1); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem; }
+    .status-rejected { color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem; }
+    
+    .btn-approve { background: #10b981; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; margin-right: 0.5rem; }
+    .btn-reject { background: #ef4444; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+    .btn-view { background: var(--bg-glass); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; margin-right: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <a href="admin-dashboard.html" class="logo" style="margin-left: 1rem;">LCR<span style="color: #d4af37;">.Admin</span></a>
+    <ul class="sidebar-nav">
+      <li><a href="admin-dashboard.html">Overview</a></li>
+      <li><a href="admin-users.html">Registered Users</a></li>
+      <li><a href="admin-cars.html">Manage Fleet</a></li>
+      <li><a href="admin-bookings.html" class="active">Booking Requests</a></li>
+      <li><a href="index.html" style="margin-top: 2rem; color: #ef4444;">Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <div class="dashboard-header">
+      <h1>Booking Requests</h1>
+    </div>
+
+    <div class="form-panel">
+      <h2>Recent Requests</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Booking ID</th>
+            <th>Customer</th>
+            <th>Vehicle</th>
+            <th>Dates</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="bookingsTable">
+          <!-- Dynamically populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function updateStatus(id, newStatus) {
+      // Update DOM
+      const statusSpan = document.getElementById(`status-${id}`);
+      const actionsCell = document.getElementById(`actions-${id}`);
+      
+      if (statusSpan) {
+        if (newStatus === 'APPROVED') {
+          statusSpan.className = 'status-approved';
+          statusSpan.innerText = 'APPROVED';
+        } else if (newStatus === 'REJECTED') {
+          statusSpan.className = 'status-rejected';
+          statusSpan.innerText = 'REJECTED';
+        }
+      }
+      
+      if (actionsCell) {
+        actionsCell.innerHTML = `<button class="btn-view" onclick="alert('Customer Details...')">Details</button>`;
+      }
+
+      // Save to simulated database
+      const allBookings = JSON.parse(localStorage.getItem('allBookings') || '[]');
+      const index = allBookings.findIndex(b => b.id == id);
+      if (index !== -1) {
+        allBookings[index].status = newStatus;
+        localStorage.setItem('allBookings', JSON.stringify(allBookings));
+      }
+    }
+
+    // Load bookings on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      const tableBody = document.getElementById('bookingsTable');
+      const allBookings = JSON.parse(localStorage.getItem('allBookings') || '[]');
+      
+      if (allBookings.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No booking requests found.</td></tr>';
+        return;
+      }
+      
+      tableBody.innerHTML = '';
+      allBookings.reverse().forEach(b => {
+        let statusHtml = '';
+        let actionHtml = '';
+        
+        if (b.status === 'PENDING') {
+          statusHtml = `<span class="status-pending" id="status-${b.id}">PENDING</span>`;
+          actionHtml = `
+            <button class="btn-view" onclick="alert('Customer: ${b.userName}\\nPhone: ${b.userPhone}')">Details</button>
+            <button class="btn-approve" onclick="updateStatus('${b.id}', 'APPROVED')">Approve</button>
+            <button class="btn-reject" onclick="updateStatus('${b.id}', 'REJECTED')">Reject</button>
+          `;
+        } else if (b.status === 'APPROVED') {
+          statusHtml = `<span class="status-approved" id="status-${b.id}">APPROVED</span>`;
+          actionHtml = `<button class="btn-view" onclick="alert('Customer: ${b.userName}\\nEmail: ${b.userEmail}')">Details</button>`;
+        } else {
+          statusHtml = `<span class="status-rejected" id="status-${b.id}">REJECTED</span>`;
+          actionHtml = `<button class="btn-view" onclick="alert('Customer: ${b.userName}\\nEmail: ${b.userEmail}')">Details</button>`;
+        }
+        
+        tableBody.innerHTML += `
+          <tr>
+            <td>#BK-${b.id}</td>
+            <td>
+              <div style="font-weight: 500;">${b.userName}</div>
+              <div style="font-size: 0.8rem; color: var(--text-secondary);">${b.userPhone}</div>
+            </td>
+            <td>${b.carName}</td>
+            <td>${b.pickupDate.split('T')[0]} - ${b.dropoffDate.split('T')[0]}</td>
+            <td>${statusHtml}</td>
+            <td id="actions-${b.id}">${actionHtml}</td>
+          </tr>
+        `;
+      });
+    });
+  </script>
+</body>
+</html>

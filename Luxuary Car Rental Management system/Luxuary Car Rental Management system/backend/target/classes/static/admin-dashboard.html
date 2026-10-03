@@ -1,0 +1,528 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard & Verification | LCR</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body { display: flex; min-height: 100vh; background-color: var(--bg-primary); margin: 0; }
+    .sidebar { width: 250px; background: var(--bg-secondary); border-right: 1px solid var(--border-color); padding: 2rem 1rem; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; }
+    .main-content { flex: 1; margin-left: 250px; padding: 2.5rem; }
+    .sidebar-nav { list-style: none; padding: 0; margin-top: 2rem; }
+    .sidebar-nav li { margin-bottom: 0.5rem; }
+    .sidebar-nav a { display: block; padding: 0.85rem 1rem; color: var(--text-secondary); text-decoration: none; border-radius: 8px; transition: var(--transition); font-weight: 500; font-size: 0.95rem; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+    .sidebar-nav a.active { border-left: 4px solid #d4af37; color: #d4af37; }
+    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+    
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem; margin-bottom: 2.5rem; }
+    .stat-card { background: var(--bg-secondary); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); transition: var(--transition); }
+    .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .stat-card h3 { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-family: var(--font-sans); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-card .value { font-size: 2.2rem; font-weight: 700; color: #d4af37; }
+
+    .panel-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 16px; padding: 2rem; margin-bottom: 2.5rem; box-shadow: var(--shadow); }
+    
+    .filter-tabs { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .filter-tab { background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.5rem 1.25rem; border-radius: 30px; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: var(--transition); }
+    .filter-tab:hover, .filter-tab.active { background: #d4af37; color: #000; border-color: #d4af37; font-weight: 600; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+    th { color: var(--text-secondary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    tr:hover { background: rgba(255,255,255,0.02); }
+
+    .btn-approve { background: #10b981; color: white; border: none; padding: 0.45rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: background 0.2s; }
+    .btn-approve:hover { background: #059669; }
+    .btn-reject { background: #ef4444; color: white; border: none; padding: 0.45rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: background 0.2s; }
+    .btn-reject:hover { background: #dc2626; }
+    .btn-view-doc { background: rgba(212, 175, 55, 0.15); color: #d4af37; border: 1px solid rgba(212, 175, 55, 0.4); padding: 0.45rem 0.9rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; }
+    .btn-view-doc:hover { background: #d4af37; color: #000; }
+
+    .quick-chip { background: rgba(255,255,255,0.06); border: 1px solid var(--border-color); border-radius: 20px; padding: 0.35rem 0.75rem; font-size: 0.8rem; color: var(--text-secondary); cursor: pointer; display: inline-block; margin: 0.25rem; transition: all 0.2s; }
+    .quick-chip:hover { background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: #ef4444; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <a href="admin-dashboard.html" class="logo" style="margin-left: 1rem;">LCR<span style="color: #d4af37;">.Admin</span></a>
+    <ul class="sidebar-nav">
+      <li><a href="admin-dashboard.html" class="active">Overview & Verification</a></li>
+      <li><a href="#licenceVerificationPanel">Driving Licences</a></li>
+      <li><a href="admin-users.html">Registered Users</a></li>
+      <li><a href="admin-cars.html">Manage Fleet</a></li>
+      <li><a href="admin-bookings.html">Booking Requests</a></li>
+      <li><a href="index.html" id="adminLogoutBtn" style="margin-top: 2rem; color: #ef4444;">Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <div class="dashboard-header">
+      <div>
+        <h1 style="font-size: 2rem; margin-bottom: 0.25rem;">Dashboard Overview</h1>
+        <p style="color: var(--text-secondary); font-size: 0.95rem;">Luxury Car Rental System Management</p>
+      </div>
+      <div id="adminUserGreeting" style="background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.3); padding: 0.5rem 1rem; border-radius: 30px; color: #d4af37; font-weight: 500; font-size: 0.9rem;">
+        Admin: Administrator
+      </div>
+    </div>
+
+    <!-- DYNAMIC STATISTICS GRID -->
+    <div class="stats-grid">
+      <div class="stat-card" style="border-left: 4px solid #f59e0b;">
+        <h3>Pending Licences</h3>
+        <div class="value" id="statPendingLicences" style="color: #f59e0b;">0</div>
+      </div>
+      <div class="stat-card" style="border-left: 4px solid #10b981;">
+        <h3>Approved Licences</h3>
+        <div class="value" id="statApprovedLicences" style="color: #10b981;">0</div>
+      </div>
+      <div class="stat-card" style="border-left: 4px solid #ef4444;">
+        <h3>Rejected Licences</h3>
+        <div class="value" id="statRejectedLicences" style="color: #ef4444;">0</div>
+      </div>
+      <div class="stat-card" style="border-left: 4px solid #3b82f6;">
+        <h3>Fleet Vehicles</h3>
+        <div class="value" id="statFleetCount" style="color: #3b82f6;">--</div>
+      </div>
+      <div class="stat-card" style="border-left: 4px solid #d4af37;">
+        <h3>Active Bookings</h3>
+        <div class="value" id="statActiveBookings" style="color: #d4af37;">--</div>
+      </div>
+    </div>
+
+    <!-- DRIVING LICENCE VERIFICATION PANEL -->
+    <div class="panel-card" id="licenceVerificationPanel">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h2 style="font-size: 1.5rem; margin-bottom: 0.25rem;">ðŸªª Driving Licence Verification</h2>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Review uploaded driving licence documents, verify customer eligibility, or request clearer documentation.</p>
+        </div>
+        <button onclick="loadAdminDashboardData()" class="zoom-btn" style="padding: 0.5rem 1rem;">
+          ðŸ”„ Refresh List
+        </button>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-status="PENDING" onclick="setLicenceFilter('PENDING')">
+          Pending Verification (<span id="tabCountPending">0</span>)
+        </button>
+        <button class="filter-tab" data-status="APPROVED" onclick="setLicenceFilter('APPROVED')">
+          Approved (<span id="tabCountApproved">0</span>)
+        </button>
+        <button class="filter-tab" data-status="REJECTED" onclick="setLicenceFilter('REJECTED')">
+          Rejected (<span id="tabCountRejected">0</span>)
+        </button>
+        <button class="filter-tab" data-status="ALL" onclick="setLicenceFilter('ALL')">
+          All Submissions
+        </button>
+      </div>
+
+      <!-- Verification Table -->
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Document</th>
+              <th>Uploaded Date</th>
+              <th>Status</th>
+              <th>Verification Details</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="licencesTableBody">
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                Loading licence verification requests...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECURE DOCUMENT PREVIEW MODAL -->
+  <div class="custom-modal-backdrop" id="adminDocModal">
+    <div class="custom-modal-box" style="max-width: 850px;">
+      <div class="custom-modal-header">
+        <div>
+          <h3 id="adminModalDocTitle" style="font-size: 1.25rem;">Driving Licence Document</h3>
+          <div id="adminModalDocMeta" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;"></div>
+        </div>
+        <button class="custom-modal-close" onclick="closeAdminDocModal()">&times;</button>
+      </div>
+      <div class="custom-modal-body">
+        <div class="zoom-controls" id="adminZoomControls" style="display: none;">
+          <button class="zoom-btn" onclick="zoomAdminDoc(1.25)">ðŸ”+ Zoom In</button>
+          <button class="zoom-btn" onclick="zoomAdminDoc(0.8)">ðŸ”- Zoom Out</button>
+          <button class="zoom-btn" onclick="resetAdminZoomDoc()">â†º Reset</button>
+        </div>
+        <div class="zoom-image-container" id="adminModalImageWrapper" style="display: none;">
+          <img id="adminModalImg" src="" alt="Customer Driving Licence">
+        </div>
+        <div id="adminModalPdfWrapper" style="display: none; height: 65vh;">
+          <iframe id="adminModalPdfFrame" src="" style="width: 100%; height: 100%; border: none; border-radius: 8px;"></iframe>
+        </div>
+        <!-- In-Modal Action Bar -->
+        <div id="adminModalActions" style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REJECTION REASON MODAL -->
+  <div class="custom-modal-backdrop" id="rejectionModal">
+    <div class="custom-modal-box" style="max-width: 500px;">
+      <div class="custom-modal-header">
+        <h3 style="color: #f87171;">âŒ Reject Driving Licence</h3>
+        <button class="custom-modal-close" onclick="closeRejectionModal()">&times;</button>
+      </div>
+      <div class="custom-modal-body">
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+          Please state the reason for rejecting <strong id="rejectCustomerName" style="color: var(--text-primary);"></strong>'s licence. The client will be notified and asked to re-upload.
+        </p>
+
+        <div style="margin-bottom: 1rem;">
+          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 500;">Quick suggestions:</div>
+          <span class="quick-chip" onclick="setQuickReason('Licence image is blurry. Please upload a clearer document.')">Blurry Image</span>
+          <span class="quick-chip" onclick="setQuickReason('Document appears expired. Please upload a valid, unexpired licence.')">Expired Licence</span>
+          <span class="quick-chip" onclick="setQuickReason('Document corners or details are cut off. Please upload full scan.')">Incomplete Document</span>
+          <span class="quick-chip" onclick="setQuickReason('Name on driving licence does not match account name.')">Name Mismatch</span>
+        </div>
+
+        <div class="form-group">
+          <label for="rejectionReasonInput">Rejection Reason (Required):</label>
+          <textarea id="rejectionReasonInput" placeholder="e.g. Licence image is blurry. Please upload a clearer document." rows="3" required></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;">
+          <button class="btn-outline" onclick="closeRejectionModal()">Cancel</button>
+          <button class="btn-reject" id="confirmRejectBtn" onclick="submitRejection()">Confirm Rejection</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js?v=3"></script>
+  <script>
+    const API_BASE = 'http://localhost:8081/api';
+    let currentFilter = 'PENDING';
+    let allLicencesData = [];
+    let pendingRejectLicenceId = null;
+    let adminZoom = 1;
+
+    // Check Admin Authentication
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'ROLE_ADMIN')) {
+      alert('Access Denied. Administrator privileges required.');
+      window.location.href = 'admin-login.html';
+    } else {
+      document.getElementById('adminUserGreeting').textContent = `Admin: ${currentUser.fullname || currentUser.fullName || currentUser.email.split('@')[0]}`;
+    }
+
+    const adminUserId = (currentUser && currentUser.id) ? currentUser.id : 1;
+
+    function zoomAdminDoc(factor) {
+      adminZoom *= factor;
+      const img = document.getElementById('adminModalImg');
+      if (img) img.style.transform = `scale(${adminZoom})`;
+    }
+
+    function resetAdminZoomDoc() {
+      adminZoom = 1;
+      const img = document.getElementById('adminModalImg');
+      if (img) img.style.transform = 'scale(1)';
+    }
+
+    function closeAdminDocModal() {
+      const modal = document.getElementById('adminDocModal');
+      if (modal) modal.classList.remove('active');
+      document.getElementById('adminModalPdfFrame').src = '';
+      document.getElementById('adminModalImg').src = '';
+    }
+
+    function closeRejectionModal() {
+      const modal = document.getElementById('rejectionModal');
+      if (modal) modal.classList.remove('active');
+      pendingRejectLicenceId = null;
+      document.getElementById('rejectionReasonInput').value = '';
+    }
+
+    function setQuickReason(text) {
+      document.getElementById('rejectionReasonInput').value = text;
+    }
+
+    function setLicenceFilter(status) {
+      currentFilter = status;
+      document.querySelectorAll('.filter-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-status') === status);
+      });
+      renderLicencesTable();
+    }
+
+    async function loadAdminDashboardData() {
+      try {
+        // Fetch Dynamic Licence Statistics
+        const statsRes = await fetch(`${API_BASE}/admin/licences/stats`, {
+          headers: { 
+            'X-User-Id': adminUserId,
+            'X-User-Role': 'admin'
+          }
+        });
+        if (statsRes.ok) {
+          const stats = await statsRes.json();
+          document.getElementById('statPendingLicences').textContent = stats.pending;
+          document.getElementById('statApprovedLicences').textContent = stats.approved;
+          document.getElementById('statRejectedLicences').textContent = stats.rejected;
+
+          document.getElementById('tabCountPending').textContent = stats.pending;
+          document.getElementById('tabCountApproved').textContent = stats.approved;
+          document.getElementById('tabCountRejected').textContent = stats.rejected;
+        }
+
+        // Fetch Fleet and Booking counts
+        try {
+          const carsRes = await fetch(`${API_BASE}/cars`);
+          if (carsRes.ok) {
+            const cars = await carsRes.json();
+            document.getElementById('statFleetCount').textContent = cars.length;
+          }
+        } catch (e) {
+          document.getElementById('statFleetCount').textContent = '3';
+        }
+
+        const allBookings = JSON.parse(localStorage.getItem('allBookings') || '[]');
+        document.getElementById('statActiveBookings').textContent = allBookings.length || '18';
+
+        // Fetch All Licences
+        const licencesRes = await fetch(`${API_BASE}/admin/licences`, {
+          headers: {
+            'X-User-Id': adminUserId,
+            'X-User-Role': 'admin'
+          }
+        });
+        if (licencesRes.ok) {
+          allLicencesData = await licencesRes.json();
+          renderLicencesTable();
+        }
+      } catch (err) {
+        console.error('Failed to load dashboard data:', err);
+      }
+    }
+
+    function renderLicencesTable() {
+      const tbody = document.getElementById('licencesTableBody');
+      tbody.innerHTML = '';
+
+      let filtered = allLicencesData;
+      if (currentFilter !== 'ALL') {
+        filtered = allLicencesData.filter(l => l.verificationStatus === currentFilter);
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 2.5rem; color: var(--text-secondary);">
+              No licences found for filter: <strong>${currentFilter}</strong>.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      filtered.forEach(lic => {
+        let badgeClass = 'pending';
+        let badgeText = 'PENDING';
+        if (lic.verificationStatus === 'APPROVED') {
+          badgeClass = 'approved';
+          badgeText = 'APPROVED';
+        } else if (lic.verificationStatus === 'REJECTED') {
+          badgeClass = 'rejected';
+          badgeText = 'REJECTED';
+        }
+
+        const uploadDateFormatted = lic.uploadDate ? new Date(lic.uploadDate).toLocaleString() : 'N/A';
+        const clientName = lic.userName || 'Customer';
+        const clientEmail = lic.userEmail || 'customer@test.com';
+
+        let auditDetails = '<span style="color:var(--text-secondary); font-size:0.85rem;">Awaiting Review</span>';
+        if (lic.verificationStatus === 'APPROVED') {
+          auditDetails = `<span style="color:#10b981; font-size:0.85rem;">Verified by <strong>${lic.verifiedBy || 'Admin'}</strong></span>`;
+        } else if (lic.verificationStatus === 'REJECTED') {
+          auditDetails = `<span style="color:#ef4444; font-size:0.85rem;" title="${lic.rejectionReason || ''}">Reason: <em>"${lic.rejectionReason || 'Document unclear'}"</em></span>`;
+        }
+
+        let actionButtons = '';
+        if (lic.verificationStatus === 'PENDING') {
+          actionButtons = `
+            <button class="btn-approve" onclick="approveLicence(${lic.id}, '${clientName.replace(/'/g, "\\'")}')">âœ“ Approve</button>
+            <button class="btn-reject" onclick="openRejectionModal(${lic.id}, '${clientName.replace(/'/g, "\\'")}')">âœ— Reject</button>
+          `;
+        } else if (lic.verificationStatus === 'REJECTED') {
+          actionButtons = `
+            <button class="btn-approve" onclick="approveLicence(${lic.id}, '${clientName.replace(/'/g, "\\'")}')">Re-Approve</button>
+          `;
+        } else if (lic.verificationStatus === 'APPROVED') {
+          actionButtons = `
+            <button class="btn-reject" onclick="openRejectionModal(${lic.id}, '${clientName.replace(/'/g, "\\'")}')">Revoke</button>
+          `;
+        }
+
+        tbody.innerHTML += `
+          <tr>
+            <td>
+              <div style="font-weight: 600; color: var(--text-primary);">${clientName}</div>
+              <div style="font-size: 0.85rem; color: var(--text-secondary);">${clientEmail}</div>
+            </td>
+            <td>
+              <button class="btn-view-doc" onclick="viewLicenceDoc(${lic.id})">
+                ðŸ“„ View Document
+              </button>
+            </td>
+            <td style="font-size: 0.9rem; color: var(--text-secondary);">${uploadDateFormatted}</td>
+            <td>
+              <span class="licence-badge ${badgeClass}">${badgeText}</span>
+            </td>
+            <td>${auditDetails}</td>
+            <td>
+              <div style="display: flex; gap: 0.5rem;">${actionButtons}</div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // View licence document modal
+    function viewLicenceDoc(licenceId) {
+      const lic = allLicencesData.find(l => l.id === licenceId);
+      if (!lic) return;
+
+      const modal = document.getElementById('adminDocModal');
+      const fileUrl = `${API_BASE}/admin/licences/${lic.id}/file?userId=${adminUserId}&role=admin`;
+      const isPdf = (lic.fileType === 'application/pdf') || (lic.originalFileName && lic.originalFileName.toLowerCase().endsWith('.pdf'));
+
+      document.getElementById('adminModalDocTitle').textContent = `Licence: ${lic.userName || 'Client'} (${lic.originalFileName})`;
+      document.getElementById('adminModalDocMeta').textContent = `Format: ${lic.fileType || 'Unknown'} â€¢ Uploaded: ${lic.uploadDate ? new Date(lic.uploadDate).toLocaleString() : 'N/A'}`;
+
+      if (isPdf) {
+        document.getElementById('adminZoomControls').style.display = 'none';
+        document.getElementById('adminModalImageWrapper').style.display = 'none';
+        document.getElementById('adminModalPdfWrapper').style.display = 'block';
+        document.getElementById('adminModalPdfFrame').src = fileUrl;
+      } else {
+        document.getElementById('adminModalPdfWrapper').style.display = 'none';
+        document.getElementById('adminZoomControls').style.display = 'flex';
+        document.getElementById('adminModalImageWrapper').style.display = 'block';
+        resetAdminZoomDoc();
+        document.getElementById('adminModalImg').src = fileUrl;
+      }
+
+      // Actions in modal
+      const modalActions = document.getElementById('adminModalActions');
+      const clientNameEscaped = (lic.userName || 'Client').replace(/'/g, "\\'");
+      modalActions.innerHTML = `
+        <button class="btn-approve" onclick="approveLicence(${lic.id}, '${clientNameEscaped}'); closeAdminDocModal();">âœ“ Approve Document</button>
+        <button class="btn-reject" onclick="closeAdminDocModal(); openRejectionModal(${lic.id}, '${clientNameEscaped}');">âœ— Reject Document</button>
+      `;
+
+      modal.classList.add('active');
+    }
+
+    // Approve Licence
+    async function approveLicence(licenceId, clientName) {
+      if (!confirm(`Are you sure you want to APPROVE the driving licence for ${clientName}?`)) {
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/licences/${licenceId}/approve`, {
+          method: 'PUT',
+          headers: {
+            'X-User-Id': adminUserId,
+            'X-User-Role': 'admin'
+          }
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.message || 'Approval failed.');
+        }
+
+        alert(`Licence for ${clientName} has been APPROVED!`);
+        await loadAdminDashboardData();
+      } catch (e) {
+        console.error('Approve failed:', e);
+        alert('Could not approve licence: ' + e.message);
+      }
+    }
+
+    // Open Rejection Modal
+    function openRejectionModal(licenceId, clientName) {
+      pendingRejectLicenceId = licenceId;
+      document.getElementById('rejectCustomerName').textContent = clientName;
+      document.getElementById('rejectionReasonInput').value = '';
+      document.getElementById('rejectionModal').classList.add('active');
+    }
+
+    // Submit Rejection
+    async function submitRejection() {
+      const reason = document.getElementById('rejectionReasonInput').value.trim();
+      if (!reason) {
+        alert('Please provide a reason for rejecting this licence.');
+        return;
+      }
+
+      if (!pendingRejectLicenceId) return;
+
+      const confirmBtn = document.getElementById('confirmRejectBtn');
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = 'Rejecting...';
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/licences/${pendingRejectLicenceId}/reject`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-User-Id': adminUserId,
+            'X-User-Role': 'admin'
+          },
+          body: JSON.stringify({ reason: reason })
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.message || 'Rejection failed.');
+        }
+
+        alert('Driving licence has been REJECTED. The client has been notified.');
+        closeRejectionModal();
+        await loadAdminDashboardData();
+      } catch (e) {
+        console.error('Rejection failed:', e);
+        alert('Could not reject licence: ' + e.message);
+      } finally {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = 'Confirm Rejection';
+      }
+    }
+
+    // Logout
+    document.getElementById('adminLogoutBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('currentUser');
+      window.location.href = 'index.html';
+    });
+
+    // Initial load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadAdminDashboardData();
+    });
+  </script>
+</body>
+</html>
+

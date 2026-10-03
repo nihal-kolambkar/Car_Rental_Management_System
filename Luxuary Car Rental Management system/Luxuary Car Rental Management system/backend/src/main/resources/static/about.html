@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | LCR</title>
+  <meta name="description" content="Learn more about LCR, the leading premium car rental service.">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .about-section {
+      padding: 6rem 5% 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      margin-top: 3rem;
+    }
+    .about-image {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      position: relative;
+    }
+    .about-image img {
+      width: 100%;
+      display: block;
+      transition: var(--transition);
+    }
+    .about-image:hover img {
+      transform: scale(1.05);
+    }
+    .about-text h1 {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+    }
+    .about-text p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+    .stats {
+      display: flex;
+      gap: 3rem;
+      margin-top: 3rem;
+    }
+    .stat-item h3 {
+      font-size: 2.5rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .stat-item p {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    @media (max-width: 992px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+      .stats {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo"><img src="images/lcr_logo.png" alt="LCR Logo" style="height: 35px;"></a>
+    <nav id="navbar">
+      <a href="index.html">Home</a>
+      <a href="cars.html">Fleet</a>
+      <a href="customer-bookings.html">My Bookings</a>
+      <a href="about.html" class="active">About</a>
+      <a href="login.html">Customer Login</a>
+      <a href="admin-login.html">Admin Login</a>
+      <a href="register.html" class="btn-primary" style="padding: 0.5rem 1rem;">Register</a>
+    </nav>
+    <button id="menuToggle">☰</button>
+  </header>
+
+  <main>
+    <section class="about-section">
+      <div class="about-grid">
+        <div class="about-text">
+          <h1>Redefining Luxury Rentals.</h1>
+          <p>Founded with a passion for exceptional driving experiences, LCR provides unparalleled access to the world's most prestigious vehicles. We believe that the journey is just as important as the destination.</p>
+          <p>Our commitment to excellence extends beyond our meticulously maintained fleet. We offer white-glove customer service, flexible delivery options, and a seamless booking process designed to cater to the exacting standards of our clientele.</p>
+          
+          <div class="stats">
+            <div class="stat-item">
+              <h3>50+</h3>
+              <p>Premium Vehicles</p>
+            </div>
+            <div class="stat-item">
+              <h3>10k+</h3>
+              <p>Happy Clients</p>
+            </div>
+            <div class="stat-item">
+              <h3>5</h3>
+              <p>Global Locations</p>
+            </div>
+          </div>
+        </div>
+        <div class="about-image">
+          <img src="images/hero_bg_1778313455062.png" alt="About LCR">
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-col">
+        <a href="index.html" class="logo" style="margin-bottom:1rem;"><img src="images/lcr_logo.png" alt="LCR Logo" style="height: 35px;"></a>
+        <p>Premium car rental service providing top-tier vehicles for those who demand excellence on the road.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="cars.html">Our Fleet</a></li>
+          <li><a href="about.html">About Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cancellation Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 LCR Car Rental. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

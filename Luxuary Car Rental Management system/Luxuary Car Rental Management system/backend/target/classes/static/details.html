@@ -1,0 +1,381 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vehicle Details | LCR</title>
+  <meta name="description" content="Book your luxury vehicle with LCR.">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .detail-section {
+      padding: 8rem 5% 5rem;
+    }
+    .booking-form {
+      background: var(--bg-secondary);
+      padding: 2.5rem;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+    }
+    .booking-form h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+    .features-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo"><img src="images/lcr_logo.png" alt="LCR Logo" style="height: 35px;"></a>
+    <nav id="navbar">
+      <a href="index.html">Home</a>
+      <a href="cars.html" class="active">Fleet</a>
+      <a href="customer-bookings.html">My Bookings</a>
+      <a href="about.html">About</a>
+      <a href="login.html">Customer Login</a>
+      <a href="admin-login.html">Admin Login</a>
+      <a href="register.html" class="btn-primary" style="padding: 0.5rem 1rem;">Register</a>
+    </nav>
+    <button id="menuToggle">â˜°</button>
+  </header>
+
+  <main>
+    <section class="detail-section">
+      <div class="detail-grid">
+        <!-- Car Info -->
+        <div class="detail-info">
+          <div class="detail-image">
+            <img src="images/car_sport_1778313498515.png" alt="Vehicle" id="detail-img">
+          </div>
+          <h1 style="margin-top: 2rem;" id="detail-title">Ares GT Sport</h1>
+          <div class="detail-price" id="detail-price">$250 <span style="font-size: 1rem; color: var(--text-secondary); font-weight: normal;">/ day</span></div>
+          <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 2rem;">
+            The pinnacle of performance, design, and luxury. Designed for those who crave the thrill of the open road without compromising on comfort.
+          </p>
+          
+          <h3>Key Features</h3>
+          <div class="features-list">
+            <div class="feature-item"><span>âœ”ï¸</span> 0-60 mph in 3.2s</div>
+            <div class="feature-item"><span>âœ”ï¸</span> Premium Leather Interior</div>
+            <div class="feature-item"><span>âœ”ï¸</span> Advanced Navigation</div>
+            <div class="feature-item"><span>âœ”ï¸</span> Surround Sound System</div>
+            <div class="feature-item"><span>âœ”ï¸</span> Heated Seats</div>
+            <div class="feature-item"><span>âœ”ï¸</span> Bluetooth Connectivity</div>
+          </div>
+        </div>
+
+        <!-- Booking Form -->
+        <div>
+          <form class="booking-form" id="bookingForm">
+            <h3>Reserve This Vehicle</h3>
+
+            <!-- Licence Verification Banner -->
+            <div id="licenceBookingBanner" class="licence-alert alert-info" style="margin-bottom: 1.5rem;">
+              Checking driving licence status...
+            </div>
+
+            <div class="form-group">
+              <label for="pickupLocation">Pick-up Location</label>
+              <select id="pickupLocation" required>
+                <option value="">Select a location</option>
+                <option value="JFK Airport">JFK Airport</option>
+                <option value="LAX Airport">LAX Airport</option>
+                <option value="Miami International">Miami International</option>
+                <option value="Downtown Branch">Downtown Branch</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="pickupDate">Pick-up Date</label>
+              <input type="date" id="pickupDate" name="pickupDate" required>
+              <label for="pickupTime" style="margin-top: 0.75rem;">Pick-up Time</label>
+              <input type="time" id="pickupTime" name="pickupTime" required>
+            </div>
+
+            <div class="form-group">
+              <label for="dropoffDate">Drop-off Date</label>
+              <input type="date" id="dropoffDate" name="dropoffDate" required>
+              <label for="dropoffTime" style="margin-top: 0.75rem;">Drop-off Time</label>
+              <input type="time" id="dropoffTime" name="dropoffTime" required>
+            </div>
+
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" placeholder="John Doe" required>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input type="tel" id="phone" placeholder="+91 98765 43210" pattern="[0-9]{10}" maxlength="10" title="Enter 10-digit Indian phone number" required>
+            </div>
+
+            <button type="submit" id="confirmBookingBtn" class="btn-primary" style="width: 100%; margin-top: 1rem; font-size: 1.1rem;">
+              Confirm Booking
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-col">
+        <a href="index.html" class="logo" style="margin-bottom:1rem;"><img src="images/lcr_logo.png" alt="LCR Logo" style="height: 35px;"></a>
+        <p>Premium car rental service providing top-tier vehicles for those who demand excellence on the road.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="cars.html">Our Fleet</a></li>
+          <li><a href="about.html">About Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cancellation Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 LCR Car Rental. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js?v=3"></script>
+  <script>
+    const API_BASE = 'http://localhost:8081/api';
+    let isLicenceApproved = false;
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const car = urlParams.get('car');
+      const price = urlParams.get('price');
+      const img = urlParams.get('img');
+      
+      if (car) {
+        document.getElementById('detail-title').innerText = car;
+        document.title = car + ' | LCR Details';
+      }
+      if (price) {
+        document.getElementById('detail-price').innerHTML = price.replace('/day', '') + ' <span style="font-size: 1rem; color: var(--text-secondary); font-weight: normal;">/ day</span>';
+      }
+      if (img) {
+        document.getElementById('detail-img').src = img;
+        document.getElementById('detail-img').alt = car || 'Car Image';
+      }
+
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      const nameInput = document.getElementById('name');
+      const banner = document.getElementById('licenceBookingBanner');
+      const bookingBtn = document.getElementById('confirmBookingBtn');
+
+      if (currentUser && nameInput) {
+        nameInput.value = currentUser.fullname || currentUser.fullName || currentUser.email.split('@')[0];
+      }
+
+      // Check licence status
+      if (!currentUser) {
+        banner.className = 'licence-alert alert-warning';
+        banner.innerHTML = `
+          <strong>Sign In Required:</strong> Please <a href="login.html" style="color:var(--accent); font-weight:600;">sign in</a> to book this vehicle.
+        `;
+        bookingBtn.disabled = true;
+        bookingBtn.style.opacity = '0.5';
+        bookingBtn.style.cursor = 'not-allowed';
+        return;
+      }
+
+      // Ensure user has backend ID
+      if (!currentUser.id) {
+        try {
+          const res = await fetch(`${API_BASE}/users`);
+          if (res.ok) {
+            const users = await res.json();
+            const match = users.find(u => u.email.toLowerCase() === currentUser.email.toLowerCase());
+            if (match) {
+              currentUser.id = match.id;
+              localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
+          }
+        } catch (e) {
+          console.error("Could not sync user ID:", e);
+        }
+      }
+
+      const userId = currentUser.id || 1;
+
+      try {
+        const statusRes = await fetch(`${API_BASE}/client/licence/status`, {
+          headers: { 'X-User-Id': userId }
+        });
+        const statusData = await statusRes.json();
+        
+        if (statusData.status === 'APPROVED') {
+          isLicenceApproved = true;
+          banner.className = 'licence-alert alert-success';
+          banner.innerHTML = `
+            <strong>âœ“ Driving Licence Approved:</strong> Your driving licence has been approved. You can now book a car.
+          `;
+          bookingBtn.disabled = false;
+          bookingBtn.style.opacity = '1';
+          bookingBtn.style.cursor = 'pointer';
+          bookingBtn.textContent = 'Continue Booking';
+        } else if (statusData.status === 'PENDING') {
+          isLicenceApproved = false;
+          banner.className = 'licence-alert alert-warning';
+          banner.innerHTML = `
+            <strong>ðŸ•’ Under Verification:</strong> Your driving licence is currently being verified.
+          `;
+          bookingBtn.disabled = true;
+          bookingBtn.style.opacity = '0.5';
+          bookingBtn.style.cursor = 'not-allowed';
+          bookingBtn.textContent = 'Verification Pending';
+        } else if (statusData.status === 'REJECTED') {
+          isLicenceApproved = false;
+          banner.className = 'licence-alert alert-danger';
+          const reason = statusData.rejectionReason || 'Licence image is unclear. Please upload a clearer image.';
+          banner.innerHTML = `
+            <strong>âŒ Driving Licence Rejected:</strong> Your driving licence was rejected. Please upload a new document.<br>
+            <em style="font-size: 0.85rem; color: #fee2e2; display:block; margin: 0.25rem 0;">Reason: "${reason}"</em>
+            <a href="customer-bookings.html" class="btn-outline" style="display:inline-block; margin-top:0.5rem; padding:0.4rem 0.8rem; font-size:0.85rem;">Upload New Licence</a>
+          `;
+          bookingBtn.disabled = true;
+          bookingBtn.style.opacity = '0.5';
+          bookingBtn.style.cursor = 'not-allowed';
+          bookingBtn.textContent = 'Licence Rejected';
+        } else {
+          isLicenceApproved = false;
+          banner.className = 'licence-alert alert-warning';
+          banner.innerHTML = `
+            <strong>âš ï¸ Driving Licence Required:</strong> Please upload your driving licence before booking.<br>
+            <a href="customer-bookings.html" class="btn-outline" style="display:inline-block; margin-top:0.5rem; padding:0.4rem 0.8rem; font-size:0.85rem;">Upload Licence</a>
+          `;
+          bookingBtn.disabled = true;
+          bookingBtn.style.opacity = '0.5';
+          bookingBtn.style.cursor = 'not-allowed';
+          bookingBtn.textContent = 'Upload Licence to Book';
+        }
+      } catch (err) {
+        console.warn('Licence check error:', err);
+      }
+
+      // Booking Form Submission Handler with BACKEND ENFORCEMENT
+      const form = document.getElementById('bookingForm');
+      const pickupDateInput = document.getElementById('pickupDate');
+      const pickupTimeInput = document.getElementById('pickupTime');
+      const dropoffDateInput = document.getElementById('dropoffDate');
+      const dropoffTimeInput = document.getElementById('dropoffTime');
+
+      pickupDateInput.addEventListener('change', () => {
+        dropoffDateInput.min = pickupDateInput.value;
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!currentUser) {
+          alert('Please sign in first.');
+          window.location.href = 'login.html';
+          return;
+        }
+
+        if (!isLicenceApproved) {
+          alert('Cannot book vehicle: Your driving licence must be APPROVED by our administrators before creating a booking.');
+          return;
+        }
+
+        const pickupLocation = document.getElementById('pickupLocation').value;
+        const pickupDate = `${pickupDateInput.value}T${pickupTimeInput.value}`;
+        const dropoffDate = `${dropoffDateInput.value}T${dropoffTimeInput.value}`;
+        const customerName = document.getElementById('name').value;
+        const phoneNumber = document.getElementById('phone').value;
+        const carName = document.getElementById('detail-title').innerText;
+
+        if (!pickupDateInput.value || !pickupTimeInput.value || !dropoffDateInput.value || !dropoffTimeInput.value) {
+          alert('Please select both a date and time for pick-up and drop-off.');
+          return;
+        }
+
+        if (new Date(dropoffDate) <= new Date(pickupDate)) {
+          alert('Drop-off date and time must be after pick-up date and time.');
+          return;
+        }
+
+        bookingBtn.disabled = true;
+        bookingBtn.textContent = 'Processing Booking...';
+
+        try {
+          // Send to BACKEND booking API with user ID
+          const backendBookingPayload = {
+            user: { id: userId },
+            car: { id: 1 }, // default car ID
+            pickupLocation: pickupLocation,
+            pickupDate: pickupDate,
+            dropoffDate: dropoffDate,
+            phoneNumber: phoneNumber,
+            status: 'PENDING'
+          };
+
+          const bookingRes = await fetch(`${API_BASE}/bookings`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-User-Id': userId
+            },
+            body: JSON.stringify(backendBookingPayload)
+          });
+
+          const resData = await bookingRes.json();
+
+          if (!bookingRes.ok) {
+            throw new Error(resData.message || 'Booking was rejected by server.');
+          }
+
+          // Save to local bookings storage
+          const allBookings = JSON.parse(localStorage.getItem('allBookings') || '[]');
+          const newBookingId = resData.id || Math.floor(10000 + Math.random() * 90000);
+
+          allBookings.push({
+            id: newBookingId,
+            userEmail: currentUser.email,
+            userPhone: phoneNumber,
+            userName: customerName,
+            carName: carName,
+            pickupDate: pickupDate,
+            dropoffDate: dropoffDate,
+            pickupLocation: pickupLocation,
+            status: 'PENDING'
+          });
+          localStorage.setItem('allBookings', JSON.stringify(allBookings));
+
+          alert('Booking request submitted successfully! Your driving licence was verified.');
+          window.location.href = 'customer-bookings.html';
+        } catch (error) {
+          console.error('Booking failed:', error);
+          alert('Booking failed: ' + error.message);
+          bookingBtn.disabled = false;
+          bookingBtn.textContent = 'Confirm Booking';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+

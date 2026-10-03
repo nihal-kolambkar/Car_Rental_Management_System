@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register | LCR</title>
+  <meta name="description" content="Create an account with LCR for exclusive access to premium vehicles.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo"><img src="images/lcr_logo.png" alt="LCR Logo" style="height: 35px;"></a>
+    <nav id="navbar">
+      <a href="index.html">Home</a>
+      <a href="cars.html">Fleet</a>
+      <a href="customer-bookings.html">My Bookings</a>
+      <a href="about.html">About</a>
+      <a href="login.html">Customer Login</a>
+      <a href="admin-login.html">Admin Login</a>
+      <a href="register.html" class="btn-primary" style="padding: 0.5rem 1rem;">Register</a>
+    </nav>
+    <button id="menuToggle">☰</button>
+  </header>
+
+  <main>
+    <div class="auth-container">
+      <div class="auth-card">
+        <h2>Create Account</h2>
+        <p>Join LCR for a premium rental experience</p>
+        
+        <form id="registerForm">
+          <div class="form-group">
+            <label for="fullname">Full Name</label>
+            <input type="text" id="fullname" placeholder="John Doe" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="you@example.com" required>
+          </div>
+          
+          <input type="hidden" id="role" value="customer">
+
+          
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="password" placeholder="Create a strong password" required>
+              <button type="button" class="toggle-password" aria-label="Toggle password visibility">👁️</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirm_password">Confirm Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="confirm_password" placeholder="Repeat your password" required>
+              <button type="button" class="toggle-password" aria-label="Toggle password visibility">👁️</button>
+            </div>
+          </div>
+
+          <!-- Driving Licence Upload Section -->
+          <div class="form-group" style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color);">
+            <label style="font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+              <span>🪪</span> Driving Licence <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-secondary);">(Optional now, required to book)</span>
+            </label>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap;">
+              <button type="button" class="btn-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem;" onclick="document.getElementById('regLicenceInput').click()">
+                Choose File
+              </button>
+              <span id="regSelectedFileName" style="color: #d4af37; font-size: 0.85rem; font-weight: 500;">No file chosen</span>
+            </div>
+            <input type="file" id="regLicenceInput" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" style="display: none;">
+            <div style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 0.4rem;">
+              Supported formats: <strong>JPG, JPEG, PNG, PDF</strong> (Max size: <strong>5 MB</strong>)
+            </div>
+
+            <!-- Preview Container -->
+            <div id="regPreviewContainer" style="display: none; margin-top: 1rem;">
+              <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 500;">
+                Preview Before Submission:
+              </div>
+              <div id="regImagePreviewBox" style="display: none; text-align: center; background: #000; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                <img id="regPreviewImg" src="" alt="Driving Licence Preview" style="max-height: 160px; max-width: 100%; border-radius: 6px;">
+              </div>
+              <div id="regPdfPreviewBox" style="display: none; padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
+                <span style="font-size: 2rem; display: block;">📕</span>
+                <strong id="regPdfNameDisplay" style="font-size: 0.9rem; color: var(--text-primary); margin-top: 0.25rem; display: block;"></strong>
+                <span style="color: var(--text-secondary); font-size: 0.8rem;">PDF Document ready to upload</span>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">Create Account</button>
+        </form>
+        
+        <div style="text-align: center; margin-top: 2rem; color: var(--text-secondary); font-size: 0.9rem;">
+          Already have an account? <a href="login.html" style="color: var(--accent); text-decoration: none; font-weight: 500;">Sign In</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/app.js?v=2"></script>
+</body>
+</html>

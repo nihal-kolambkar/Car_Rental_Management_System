@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Fleet | LCR</title>
+  <meta name="description" content="Browse our extensive fleet of premium vehicles. Find the perfect ride for your journey.">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .page-header {
+      padding: 8rem 5% 4rem;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+    .page-header h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    .filters {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 0.5rem 1.5rem;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo"><img src="images/lcr_logo.png" alt="LCR Logo" style="height: 35px;"></a>
+    <nav id="navbar">
+      <a href="index.html">Home</a>
+      <a href="cars.html" class="active">Fleet</a>
+      <a href="customer-bookings.html">My Bookings</a>
+      <a href="about.html">About</a>
+      <a href="login.html">Customer Login</a>
+      <a href="admin-login.html">Admin Login</a>
+      <a href="register.html" class="btn-primary" style="padding: 0.5rem 1rem;">Register</a>
+    </nav>
+    <button id="menuToggle">☰</button>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <h1>Our Premium Fleet</h1>
+      <p style="color: var(--text-secondary);">Select from our exclusive collection of high-end vehicles.</p>
+    </div>
+
+    <section>
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="sports">Sports</button>
+        <button class="filter-btn" data-filter="suv">Luxury SUV</button>
+        <button class="filter-btn" data-filter="sedan">Sedans</button>
+      </div>
+
+      <div class="car-grid">
+        <!-- Car 1 -->
+        <article class="car-card" data-category="sports">
+          <div class="car-image-wrapper">
+            <img src="images/car_sport_1778313498515.png" alt="Ares GT Sport">
+            <div class="car-price-badge">$250/day</div>
+          </div>
+          <div class="car-details">
+            <h3>Ares GT Sport</h3>
+            <div class="car-specs">
+              <div class="car-spec-item"><span>⚡</span> 550 HP</div>
+              <div class="car-spec-item"><span>⚙️</span> Auto</div>
+              <div class="car-spec-item"><span>👤</span> 2 Seats</div>
+            </div>
+            <div class="car-actions">
+              <a href="details.html?car=Ares+GT+Sport&price=$250&img=images/car_sport_1778313498515.png" class="btn-primary">Book Now</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Car 2 -->
+        <article class="car-card" data-category="suv">
+          <div class="car-image-wrapper">
+            <img src="images/car_suv_1778313477078.png" alt="Titan Lux SUV">
+            <div class="car-price-badge">$180/day</div>
+          </div>
+          <div class="car-details">
+            <h3>Titan Lux SUV</h3>
+            <div class="car-specs">
+              <div class="car-spec-item"><span>⚡</span> 420 HP</div>
+              <div class="car-spec-item"><span>⚙️</span> Auto</div>
+              <div class="car-spec-item"><span>👤</span> 7 Seats</div>
+            </div>
+            <div class="car-actions">
+              <a href="details.html?car=Titan+Lux+SUV&price=$180&img=images/car_suv_1778313477078.png" class="btn-primary">Book Now</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Car 3 -->
+        <article class="car-card" data-category="sedan">
+          <div class="car-image-wrapper">
+            <img src="images/car_sedan_1778313521519.png" alt="Phantom Executive">
+            <div class="car-price-badge">$210/day</div>
+          </div>
+          <div class="car-details">
+            <h3>Phantom Executive</h3>
+            <div class="car-specs">
+              <div class="car-spec-item"><span>⚡</span> 380 HP</div>
+              <div class="car-spec-item"><span>⚙️</span> Auto</div>
+              <div class="car-spec-item"><span>👤</span> 5 Seats</div>
+            </div>
+            <div class="car-actions">
+              <a href="details.html?car=Phantom+Executive&price=$210&img=images/car_sedan_1778313521519.png" class="btn-primary">Book Now</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Car 4 (Duplicate for display) -->
+        <article class="car-card" data-category="sports">
+          <div class="car-image-wrapper">
+            <img src="images/hero_bg_1778313455062.png" alt="Vantage S">
+            <div class="car-price-badge">$300/day</div>
+          </div>
+          <div class="car-details">
+            <h3>Vantage S Grand Tourer</h3>
+            <div class="car-specs">
+              <div class="car-spec-item"><span>⚡</span> 600 HP</div>
+              <div class="car-spec-item"><span>⚙️</span> Auto</div>
+              <div class="car-spec-item"><span>👤</span> 2 Seats</div>
+            </div>
+            <div class="car-actions">
+              <a href="details.html?car=Vantage+S+Grand+Tourer&price=$300&img=images/hero_bg_1778313455062.png" class="btn-primary">Book Now</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Car 5: BMW M4 -->
+        <article class="car-card" data-category="sports">
+          <div class="car-image-wrapper">
+            <img src="images/bmw_m4.png" alt="BMW M4 Competition">
+            <div class="car-price-badge">$280/day</div>
+          </div>
+          <div class="car-details">
+            <h3>BMW M4 Competition</h3>
+            <div class="car-specs">
+              <div class="car-spec-item"><span>⚡</span> 503 HP</div>
+              <div class="car-spec-item"><span>⚙️</span> Auto</div>
+              <div class="car-spec-item"><span>👤</span> 4 Seats</div>
+            </div>
+            <div class="car-actions">
+              <a href="details.html?car=BMW+M4+Competition&price=$280&img=images/bmw_m4.png" class="btn-primary">Book Now</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Car 6: Porsche 911 -->
+        <article class="car-card" data-category="sports">
+          <div class="car-image-wrapper">
+            <img src="images/porsche_911.png" alt="Porsche 911 Carrera">
+            <div class="car-price-badge">$350/day</div>
+          </div>
+          <div class="car-details">
+            <h3>Porsche 911 Carrera</h3>
+            <div class="car-specs">
+              <div class="car-spec-item"><span>⚡</span> 443 HP</div>
+              <div class="car-spec-item"><span>⚙️</span> Auto</div>
+              <div class="car-spec-item"><span>👤</span> 2 Seats</div>
+            </div>
+            <div class="car-actions">
+              <a href="details.html?car=Porsche+911+Carrera&price=$350&img=images/porsche_911.png" class="btn-primary">Book Now</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Car 7: Lamborghini Aventador -->
+        <article class="car-card" data-category="sports">
+          <div class="car-image-wrapper">
+            <img src="images/lambo_aventador.png" alt="Lamborghini Aventador">
+            <div class="car-price-badge">$800/day</div>
+          </div>
+          <div class="car-details">
+            <h3>Lamborghini Aventador</h3>
+            <div class="car-specs">
+              <div class="car-spec-item"><span>⚡</span> 769 HP</div>
+              <div class="car-spec-item"><span>⚙️</span> Auto</div>
+              <div class="car-spec-item"><span>👤</span> 2 Seats</div>
+            </div>
+            <div class="car-actions">
+              <a href="details.html?car=Lamborghini+Aventador&price=$800&img=images/lambo_aventador.png" class="btn-primary">Book Now</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Car 8: Land Rover Defender -->
+        <article class="car-card" data-category="suv">
+          <div class="car-image-wrapper">
+            <img src="images/defender.png" alt="Land Rover Defender">
+            <div class="car-price-badge">$160/day</div>
+          </div>
+          <div class="car-details">
+            <h3>Land Rover Defender</h3>
+            <div class="car-specs">
+              <div class="car-spec-item"><span>⚡</span> 296 HP</div>
+              <div class="car-spec-item"><span>⚙️</span> Auto</div>
+              <div class="car-spec-item"><span>👤</span> 5 Seats</div>
+            </div>
+            <div class="car-actions">
+              <a href="details.html?car=Land+Rover+Defender&price=$160&img=images/defender.png" class="btn-primary">Book Now</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Car 9: Mercedes G-Wagon -->
+        <article class="car-card" data-category="suv">
+          <div class="car-image-wrapper">
+            <img src="images/gwagon.png" alt="Mercedes-Benz G-Class">
+            <div class="car-price-badge">$450/day</div>
+          </div>
+          <div class="car-details">
+            <h3>Mercedes-Benz G-Class</h3>
+            <div class="car-specs">
+              <div class="car-spec-item"><span>⚡</span> 577 HP</div>
+              <div class="car-spec-item"><span>⚙️</span> Auto</div>
+              <div class="car-spec-item"><span>👤</span> 5 Seats</div>
+            </div>
+            <div class="car-actions">
+              <a href="details.html?car=Mercedes-Benz+G-Class&price=$450&img=images/gwagon.png" class="btn-primary">Book Now</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-col">
+        <a href="index.html" class="logo" style="margin-bottom:1rem;"><img src="images/lcr_logo.png" alt="LCR Logo" style="height: 35px;"></a>
+        <p>Premium car rental service providing top-tier vehicles for those who demand excellence on the road.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="cars.html">Our Fleet</a></li>
+          <li><a href="about.html">About Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cancellation Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 LCR Car Rental. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const carCards = document.querySelectorAll('.car-card');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Remove active class from all
+          filterBtns.forEach(b => b.classList.remove('active'));
+          // Add active class to clicked
+          btn.classList.add('active');
+
+          const filterValue = btn.getAttribute('data-filter');
+
+          carCards.forEach(card => {
+            if (filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
+              card.style.display = 'block';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>

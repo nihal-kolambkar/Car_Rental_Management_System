@@ -1,0 +1,509 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings & Profile | LCR</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .bookings-container { padding: 8rem 5% 5rem; max-width: 1200px; margin: 0 auto; min-height: calc(100vh - 200px); }
+    .page-title { margin-bottom: 2rem; font-size: 2.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+    
+    .booking-card { background: var(--bg-secondary); border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; transition: var(--transition); }
+    .booking-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: rgba(255,255,255,0.2); }
+    
+    .booking-info { display: flex; gap: 2rem; align-items: center; }
+    .booking-img img { width: 120px; border-radius: 8px; }
+    .booking-details h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .booking-meta { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; }
+    
+    .booking-status { text-align: right; }
+    .status-badge { padding: 0.5rem 1rem; border-radius: 30px; font-weight: 600; font-size: 0.9rem; display: inline-block; margin-bottom: 0.5rem; }
+    
+    .status-pending { color: #f59e0b; background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; }
+    .status-approved { color: #10b981; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; }
+    .status-rejected { color: #ef4444; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; }
+    
+    .status-desc { font-size: 0.85rem; color: var(--text-secondary); max-width: 200px; }
+    
+    @media (max-width: 768px) {
+      .booking-card { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+      .booking-status { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo"><img src="images/lcr_logo.png" alt="LCR Logo" style="height: 35px;"></a>
+    <nav id="navbar">
+      <a href="index.html">Home</a>
+      <a href="cars.html">Fleet</a>
+      <a href="customer-bookings.html" class="active">My Bookings</a>
+      <a href="about.html">About</a>
+      <a href="login.html">Customer Login</a>
+      <a href="admin-login.html">Admin Login</a>
+      <a href="register.html" class="btn-primary" style="padding: 0.5rem 1rem;">Register</a>
+    </nav>
+    <button id="menuToggle">â˜°</button>
+  </header>
+
+  <main>
+    <div class="bookings-container">
+      <h1 class="page-title">Client Dashboard & Bookings</h1>
+
+      <!-- DRIVING LICENCE UPLOAD & VERIFICATION SECTION -->
+      <div class="licence-card" id="licenceCard">
+        <div class="licence-header">
+          <h2>ðŸªª Driving Licence Verification</h2>
+          <div id="licenceStatusBadge" class="licence-badge not-uploaded">
+            <span>Checking Status...</span>
+          </div>
+        </div>
+
+        <!-- Status Details / Feedback Notice -->
+        <div id="licenceAlertBox" class="licence-alert alert-info">
+          Loading licence verification details...
+        </div>
+
+        <!-- Document Viewer CTA (If already uploaded) -->
+        <div id="licenceViewContainer" style="display: none; margin-bottom: 1.5rem;">
+          <button id="viewUploadedDocBtn" class="btn-outline" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+            <span>ðŸ‘ï¸</span> View Uploaded Document
+          </button>
+        </div>
+
+        <!-- Upload Form Area -->
+        <div id="licenceUploadArea">
+          <div class="licence-dropzone" id="licenceDropzone" onclick="document.getElementById('licenceFileInput').click()">
+            <input type="file" id="licenceFileInput" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" style="display: none;">
+            <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">ðŸ“„</div>
+            <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 0.5rem;">
+              Driving Licence
+            </div>
+            <button type="button" class="btn-outline" style="padding: 0.5rem 1.25rem; font-size: 0.9rem; margin-bottom: 0.5rem;" onclick="event.stopPropagation(); document.getElementById('licenceFileInput').click()">
+              Choose File
+            </button>
+            <div style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem;">
+              Supported formats: <strong>JPG, JPEG, PNG, PDF</strong> (Max size: <strong>5 MB</strong>)
+            </div>
+            <div id="selectedFileName" style="margin-top: 0.75rem; font-size: 0.9rem; font-weight: 600; color: #d4af37; display: none;"></div>
+          </div>
+
+          <!-- Preview before upload -->
+          <div id="previewContainer" style="display: none; margin-bottom: 1.5rem;">
+            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 500;">
+              Preview Before Submission:
+            </div>
+            <div class="licence-preview-box" id="imagePreviewBox" style="display: none;">
+              <img id="previewImg" src="" alt="Driving Licence Preview">
+            </div>
+            <div id="pdfPreviewBox" style="display: none; text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 12px;">
+              <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">ðŸ“•</span>
+              <strong id="pdfFileNameDisplay" style="font-size: 1rem; color: var(--text-primary);"></strong>
+              <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">PDF Document ready to upload</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+            <button id="uploadLicenceBtn" class="btn-primary" style="padding: 0.75rem 2rem; font-weight: 600; background: #d4af37; color: #000;">
+              Upload Licence
+            </button>
+            <span id="uploadStatusSpinner" style="display: none; color: var(--text-secondary); font-size: 0.9rem;">
+              Uploading securely to server...
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Dynamic Bookings Container -->
+      <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">Your Rental Bookings</h2>
+      <div id="bookingsList">
+        <p style="text-align:center; padding: 2rem;">Loading your bookings...</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- SECURE DOCUMENT VIEWER MODAL -->
+  <div class="custom-modal-backdrop" id="docViewerModal">
+    <div class="custom-modal-box">
+      <div class="custom-modal-header">
+        <h3 id="modalTitle">Driving Licence Document</h3>
+        <button class="custom-modal-close" onclick="closeDocModal()">&times;</button>
+      </div>
+      <div class="custom-modal-body">
+        <div class="zoom-controls" id="zoomControls" style="display: none;">
+          <button class="zoom-btn" onclick="zoomDoc(1.2)">ðŸ”+ Zoom In</button>
+          <button class="zoom-btn" onclick="zoomDoc(0.8)">ðŸ”- Zoom Out</button>
+          <button class="zoom-btn" onclick="resetZoomDoc()">â†º Reset</button>
+        </div>
+        <div class="zoom-image-container" id="modalImageWrapper" style="display: none;">
+          <img id="modalImg" src="" alt="Driving Licence Document">
+        </div>
+        <div id="modalPdfWrapper" style="display: none; height: 60vh;">
+          <iframe id="modalPdfFrame" src="" style="width: 100%; height: 100%; border: none; border-radius: 8px;"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-col">
+        <a href="index.html" class="logo" style="margin-bottom:1rem;"><img src="images/lcr_logo.png" alt="LCR Logo" style="height: 35px;"></a>
+        <p>Premium car rental service providing top-tier vehicles for those who demand excellence on the road.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="cars.html">Our Fleet</a></li>
+          <li><a href="about.html">About Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cancellation Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 LCR Car Rental. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js?v=3"></script>
+  <script>
+    const API_BASE = 'http://localhost:8081/api';
+    let currentZoom = 1;
+
+    function zoomDoc(factor) {
+      currentZoom *= factor;
+      const img = document.getElementById('modalImg');
+      if (img) img.style.transform = `scale(${currentZoom})`;
+    }
+
+    function resetZoomDoc() {
+      currentZoom = 1;
+      const img = document.getElementById('modalImg');
+      if (img) img.style.transform = 'scale(1)';
+    }
+
+    function closeDocModal() {
+      const modal = document.getElementById('docViewerModal');
+      if (modal) modal.classList.remove('active');
+      document.getElementById('modalPdfFrame').src = '';
+      document.getElementById('modalImg').src = '';
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      
+      if (!currentUser) {
+        document.getElementById('licenceCard').style.display = 'none';
+        document.getElementById('bookingsList').innerHTML = '<p style="text-align:center; padding: 3rem;">Please <a href="login.html" style="color:var(--accent); font-weight:600;">Sign In</a> to view your profile and bookings.</p>';
+        return;
+      }
+
+      // Ensure user has backend ID
+      if (!currentUser.id) {
+        try {
+          const res = await fetch(`${API_BASE}/users`);
+          if (res.ok) {
+            const users = await res.json();
+            const match = users.find(u => u.email.toLowerCase() === currentUser.email.toLowerCase());
+            if (match) {
+              currentUser.id = match.id;
+              localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
+          }
+        } catch (e) {
+          console.error("Could not sync user ID:", e);
+        }
+      }
+
+      const userId = currentUser.id || 1;
+
+      // Licence Elements
+      const statusBadge = document.getElementById('licenceStatusBadge');
+      const alertBox = document.getElementById('licenceAlertBox');
+      const viewContainer = document.getElementById('licenceViewContainer');
+      const viewBtn = document.getElementById('viewUploadedDocBtn');
+      const fileInput = document.getElementById('licenceFileInput');
+      const selectedFileName = document.getElementById('selectedFileName');
+      const previewContainer = document.getElementById('previewContainer');
+      const imagePreviewBox = document.getElementById('imagePreviewBox');
+      const previewImg = document.getElementById('previewImg');
+      const pdfPreviewBox = document.getElementById('pdfPreviewBox');
+      const pdfFileNameDisplay = document.getElementById('pdfFileNameDisplay');
+      const uploadBtn = document.getElementById('uploadLicenceBtn');
+      const uploadSpinner = document.getElementById('uploadStatusSpinner');
+
+      let currentLicenceData = null;
+
+      // Function to fetch and render licence status
+      async function refreshLicenceStatus() {
+        try {
+          const res = await fetch(`${API_BASE}/client/licence/status`, {
+            headers: { 'X-User-Id': userId }
+          });
+          if (!res.ok) throw new Error('Status fetch failed');
+          const data = await res.json();
+          currentLicenceData = data.licence;
+          renderLicenceStatus(data.status, data.licence, data.rejectionReason);
+        } catch (err) {
+          console.warn('Licence status check fallback:', err);
+          renderLicenceStatus('NOT_UPLOADED', null, null);
+        }
+      }
+
+      function renderLicenceStatus(status, licence, rejectionReason) {
+        statusBadge.className = 'licence-badge';
+        viewContainer.style.display = licence ? 'block' : 'none';
+
+        if (status === 'APPROVED') {
+          statusBadge.classList.add('approved');
+          statusBadge.innerHTML = '<span>âœ… APPROVED</span>';
+          alertBox.className = 'licence-alert alert-success';
+          alertBox.innerHTML = `
+            <strong>âœ“ Driving Licence Approved</strong><br>
+            Your driving licence has been approved. You can now book a car.
+          `;
+          uploadBtn.textContent = 'Replace Licence';
+          uploadBtn.style.background = 'rgba(255,255,255,0.1)';
+          uploadBtn.style.color = '#fff';
+        } else if (status === 'PENDING') {
+          statusBadge.classList.add('pending');
+          statusBadge.innerHTML = '<span>ðŸ•’ PENDING VERIFICATION</span>';
+          alertBox.className = 'licence-alert alert-warning';
+          alertBox.innerHTML = `
+            <strong>ðŸ•’ Under Verification</strong><br>
+            Your driving licence is currently under verification.
+          `;
+          uploadBtn.textContent = 'Replace / Re-upload';
+          uploadBtn.style.background = 'rgba(255,255,255,0.1)';
+          uploadBtn.style.color = '#fff';
+        } else if (status === 'REJECTED') {
+          statusBadge.classList.add('rejected');
+          statusBadge.innerHTML = '<span>âŒ REJECTED</span>';
+          alertBox.className = 'licence-alert alert-danger';
+          const reasonText = rejectionReason || (licence && licence.rejectionReason) || 'Licence image is unclear. Please upload a clearer image.';
+          alertBox.innerHTML = `
+            <strong>âŒ Driving Licence Rejected</strong><br>
+            Your driving licence has been rejected.<br>
+            <strong>Reason:</strong> "${reasonText}"<br>
+            Please upload a valid licence to proceed with car bookings.
+          `;
+          uploadBtn.textContent = 'Upload New Licence';
+          uploadBtn.style.background = '#d4af37';
+          uploadBtn.style.color = '#000';
+        } else {
+          statusBadge.classList.add('not-uploaded');
+          statusBadge.innerHTML = '<span>âš ï¸ NOT UPLOADED</span>';
+          alertBox.className = 'licence-alert alert-warning';
+          alertBox.innerHTML = `
+            <strong>âš ï¸ Driving Licence Required</strong><br>
+            You must upload a valid Driving Licence before you can book any vehicle. Please select your document below.
+          `;
+          uploadBtn.textContent = 'Upload Licence';
+          uploadBtn.style.background = '#d4af37';
+          uploadBtn.style.color = '#000';
+        }
+      }
+
+      // Initial status load
+      await refreshLicenceStatus();
+
+      // File selection handler with instant client-side preview
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) {
+          selectedFileName.style.display = 'none';
+          previewContainer.style.display = 'none';
+          return;
+        }
+
+        // Validate size client-side (5 MB)
+        if (file.size > 5 * 1024 * 1024) {
+          alert('File size exceeds the 5 MB limit. Please select a smaller file.');
+          fileInput.value = '';
+          selectedFileName.style.display = 'none';
+          previewContainer.style.display = 'none';
+          return;
+        }
+
+        const validExts = ['.jpg', '.jpeg', '.png', '.pdf'];
+        const fileName = file.name.toLowerCase();
+        const isValid = validExts.some(ext => fileName.endsWith(ext));
+
+        if (!isValid) {
+          alert('Invalid file format. Please upload JPG, JPEG, PNG, or PDF.');
+          fileInput.value = '';
+          selectedFileName.style.display = 'none';
+          previewContainer.style.display = 'none';
+          return;
+        }
+
+        selectedFileName.textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+        selectedFileName.style.display = 'block';
+        previewContainer.style.display = 'block';
+
+        if (file.type.includes('image')) {
+          pdfPreviewBox.style.display = 'none';
+          imagePreviewBox.style.display = 'block';
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            previewImg.src = event.target.result;
+          };
+          reader.readAsDataURL(file);
+        } else if (file.type === 'application/pdf' || fileName.endsWith('.pdf')) {
+          imagePreviewBox.style.display = 'none';
+          pdfPreviewBox.style.display = 'block';
+          pdfFileNameDisplay.textContent = file.name;
+        }
+      });
+
+      // Upload submission
+      uploadBtn.addEventListener('click', async () => {
+        const file = fileInput.files[0];
+        if (!file) {
+          alert('Please choose a licence document first.');
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        uploadBtn.disabled = true;
+        uploadSpinner.style.display = 'inline-block';
+
+        try {
+          const response = await fetch(`${API_BASE}/client/licence/upload`, {
+            method: 'POST',
+            headers: {
+              'X-User-Id': userId
+            },
+            body: formData
+          });
+
+          const resData = await response.json();
+
+          if (!response.ok) {
+            throw new Error(resData.message || 'Licence upload failed.');
+          }
+
+          alert('Driving licence uploaded successfully! Status is now PENDING verification.');
+          fileInput.value = '';
+          selectedFileName.style.display = 'none';
+          previewContainer.style.display = 'none';
+          await refreshLicenceStatus();
+        } catch (error) {
+          console.error('Upload error:', error);
+          alert('Upload failed: ' + error.message);
+        } finally {
+          uploadBtn.disabled = false;
+          uploadSpinner.style.display = 'none';
+        }
+      });
+
+      // View document modal
+      if (viewBtn) {
+        viewBtn.addEventListener('click', () => {
+          if (!currentLicenceData) return;
+          const modal = document.getElementById('docViewerModal');
+          const fileUrl = `${API_BASE}/client/licence/file?userId=${userId}`;
+          const isPdf = currentLicenceData.fileType === 'application/pdf' || currentLicenceData.originalFileName.toLowerCase().endsWith('.pdf');
+
+          if (isPdf) {
+            document.getElementById('zoomControls').style.display = 'none';
+            document.getElementById('modalImageWrapper').style.display = 'none';
+            document.getElementById('modalPdfWrapper').style.display = 'block';
+            document.getElementById('modalPdfFrame').src = fileUrl;
+          } else {
+            document.getElementById('modalPdfWrapper').style.display = 'none';
+            document.getElementById('zoomControls').style.display = 'flex';
+            document.getElementById('modalImageWrapper').style.display = 'block';
+            resetZoomDoc();
+            document.getElementById('modalImg').src = fileUrl;
+          }
+
+          modal.classList.add('active');
+        });
+      }
+
+      // Render bookings
+      const container = document.getElementById('bookingsList');
+      const allBookings = JSON.parse(localStorage.getItem('allBookings') || '[]');
+      const currentName = (currentUser.fullname || currentUser.email.split('@')[0] || '').trim().toLowerCase();
+      const userBookings = allBookings.filter(b => {
+        const bookingEmail = (b.userEmail || '').trim().toLowerCase();
+        const bookingName = (b.userName || '').trim().toLowerCase();
+        return bookingEmail === currentUser.email.toLowerCase() || (bookingName && bookingName === currentName);
+      });
+      
+      if (userBookings.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color: var(--text-secondary);">You have no bookings yet. Go to the <a href="cars.html" style="color:var(--accent);">Fleet</a> page to reserve a vehicle!</p>';
+        return;
+      }
+      
+      container.innerHTML = '';
+      userBookings.reverse().forEach(b => {
+        let statusBadgeClass = 'status-pending';
+        let statusText = 'ðŸ•’ PENDING';
+        let statusDesc = 'Awaiting administrator approval. We will notify you once confirmed.';
+        
+        if (b.status === 'APPROVED') {
+          statusBadgeClass = 'status-approved';
+          statusText = 'âœ… APPROVED';
+          statusDesc = 'Booking confirmed! Please complete payment to finalize your reservation.';
+        } else if (b.status === 'PAID') {
+          statusBadgeClass = 'status-approved';
+          statusText = 'ðŸ’³ PAID';
+          statusDesc = `Payment received via ${b.paymentMethod ? b.paymentMethod.replace('_', ' ').toUpperCase() : 'ONLINE'}. Your booking is confirmed!`;
+        } else if (b.status === 'REJECTED') {
+          statusBadgeClass = 'status-rejected';
+          statusText = 'âŒ REJECTED';
+          statusDesc = 'Unfortunately, your booking could not be approved.';
+        }
+        
+        container.innerHTML += `
+          <div class="booking-card">
+            <div class="booking-info">
+              <div class="booking-details">
+                <h3>${b.carName}</h3>
+                <div class="booking-meta">
+                  <strong>Booking ID:</strong> #BK-${b.id}<br>
+                  <strong>Pick-up:</strong> ${b.pickupDate.replace('T', ' ')} - ${b.pickupLocation}<br>
+                  <strong>Drop-off:</strong> ${b.dropoffDate.replace('T', ' ')} - ${b.pickupLocation}
+                </div>
+              </div>
+            </div>
+            <div class="booking-status">
+              <div class="status-badge ${statusBadgeClass}">${statusText}</div>
+              <div class="status-desc">${statusDesc}</div>
+              ${b.status === 'APPROVED' ? `
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                  <label for="payment-${b.id}" style="font-size: 0.9rem; color: var(--text-secondary);">Payment Method:</label>
+                  <select id="payment-${b.id}" style="width: 100%; padding: 0.5rem; margin-top: 0.5rem; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); cursor: pointer;">
+                    <option value="">Select payment method</option>
+                    <option value="debit_card">Debit Card</option>
+                    <option value="credit_card">Credit Card</option>
+                    <option value="upi">UPI</option>
+                    <option value="net_banking">Net Banking</option>
+                    <option value="cash">Pay at Counter</option>
+                  </select>
+                  <button style="width: 100%; padding: 0.6rem; margin-top: 0.8rem; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;" onclick="completePayment('${b.id}')">Complete Payment</button>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      });
+    });
+  </script>
+</body>
+</html>
+

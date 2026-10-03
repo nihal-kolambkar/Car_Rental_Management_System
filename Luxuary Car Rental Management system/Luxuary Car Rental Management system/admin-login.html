@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal | LCR</title>
+  <meta name="description" content="Secure portal for LCR administrators.">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .auth-container { background: radial-gradient(circle at top left, rgba(212, 175, 55, 0.1), transparent 40%), var(--bg-primary); }
+    .btn-admin { background: #d4af37; color: #000; font-weight: 600; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; transition: var(--transition); text-decoration: none; display: inline-block; width: 100%; text-align: center; }
+    .btn-admin:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3); background: #e5c158; }
+  </style>
+</head>
+<body>
+  <header style="border-bottom: 1px solid rgba(212, 175, 55, 0.3);">
+    <a href="index.html" class="logo">LCR<span style="color: #d4af37;">.Admin</span></a>
+  </header>
+
+  <main>
+    <div class="auth-container">
+      <div class="auth-card" style="border-top: 4px solid #d4af37;">
+        <h2>Admin Portal Access</h2>
+        <p>Master Administrator Login Only</p>
+        
+        <form id="adminLoginForm">
+          <div class="form-group">
+            <label for="email">Administrator Email</label>
+            <input type="email" id="email" placeholder="admin@veloce.com" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="password" placeholder="••••••••" required>
+              <button type="button" class="toggle-password" aria-label="Toggle password visibility">👁️</button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-admin">Secure Login</button>
+        </form>
+        
+        <div style="text-align: center; margin-top: 2rem; color: var(--text-secondary); font-size: 0.9rem;">
+          Not an admin? <a href="login.html" style="color: var(--text-primary); text-decoration: underline;">Return to customer login</a>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="js/app.js?v=2"></script>
+</body>
+</html>

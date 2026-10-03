@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registered Users & Licences | Admin | LCR</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body { display: flex; min-height: 100vh; background-color: var(--bg-primary); margin: 0; }
+    .sidebar { width: 250px; background: var(--bg-secondary); border-right: 1px solid var(--border-color); padding: 2rem 1rem; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; }
+    .main-content { flex: 1; margin-left: 250px; padding: 2.5rem; }
+    .sidebar-nav { list-style: none; padding: 0; margin-top: 2rem; }
+    .sidebar-nav li { margin-bottom: 0.5rem; }
+    .sidebar-nav a { display: block; padding: 0.85rem 1rem; color: var(--text-secondary); text-decoration: none; border-radius: 8px; transition: var(--transition); font-weight: 500; font-size: 0.95rem; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+    .sidebar-nav a.active { border-left: 4px solid #d4af37; color: #d4af37; }
+    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+    
+    .users-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+    .user-card { background: var(--bg-secondary); padding: 1.75rem; border-radius: 16px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 1.25rem; transition: var(--transition); }
+    .user-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: rgba(255,255,255,0.2); }
+    .user-card h3 { font-size: 1.25rem; margin: 0; color: var(--text-primary); }
+    .user-card p { color: var(--text-secondary); margin: 0; font-size: 0.9rem; }
+    .license-preview-thumb { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); background: #000; cursor: pointer; }
+    .no-license-placeholder { width: 100%; height: 140px; border-radius: 8px; border: 1px dashed var(--border-color); background: rgba(255,255,255,0.02); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <a href="admin-dashboard.html" class="logo" style="margin-left: 1rem;">LCR<span style="color: #d4af37;">.Admin</span></a>
+    <ul class="sidebar-nav">
+      <li><a href="admin-dashboard.html">Overview & Verification</a></li>
+      <li><a href="admin-dashboard.html#licenceVerificationPanel">Driving Licences</a></li>
+      <li><a href="admin-users.html" class="active">Registered Users</a></li>
+      <li><a href="admin-cars.html">Manage Fleet</a></li>
+      <li><a href="admin-bookings.html">Booking Requests</a></li>
+      <li><a href="index.html" id="logoutBtn" style="margin-top: 2rem; color: #ef4444;">Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <div class="dashboard-header">
+      <div>
+        <h1 style="font-size: 2rem; margin-bottom: 0.25rem;">Registered Users & Licences</h1>
+        <p style="color: var(--text-secondary); font-size: 0.95rem;">Client Accounts and Driving Document Status</p>
+      </div>
+    </div>
+
+    <div class="users-grid" id="usersGrid">
+      <p style="color: var(--text-secondary);">Loading registered users...</p>
+    </div>
+  </div>
+
+  <!-- Document Preview Modal -->
+  <div class="custom-modal-backdrop" id="userDocModal">
+    <div class="custom-modal-box" style="max-width: 800px;">
+      <div class="custom-modal-header">
+        <h3 id="userDocModalTitle">Licence Document</h3>
+        <button class="custom-modal-close" onclick="closeUserDocModal()">&times;</button>
+      </div>
+      <div class="custom-modal-body">
+        <div class="zoom-image-container" id="userDocImageWrapper">
+          <img id="userDocModalImg" src="" alt="Driving Licence" style="max-width: 100%;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js?v=3"></script>
+  <script>
+    const API_BASE = 'http://localhost:8081/api';
+
+    function closeUserDocModal() {
+      const modal = document.getElementById('userDocModal');
+      if (modal) modal.classList.remove('active');
+      document.getElementById('userDocModalImg').src = '';
+    }
+
+    function viewUserDoc(url, title) {
+      document.getElementById('userDocModalTitle').textContent = title;
+      document.getElementById('userDocModalImg').src = url;
+      document.getElementById('userDocModal').classList.add('active');
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'ROLE_ADMIN')) {
+        window.location.href = 'admin-login.html';
+        return;
+      }
+
+      const usersGrid = document.getElementById('usersGrid');
+
+      try {
+        // Fetch users from backend
+        let users = [];
+        try {
+          const res = await fetch(`${API_BASE}/users`);
+          if (res.ok) {
+            users = await res.json();
+          }
+        } catch (e) {
+          console.warn("Backend users endpoint fallback to localStorage:", e);
+          users = JSON.parse(localStorage.getItem('users') || '[]');
+        }
+
+        // Fetch licence records from backend
+        let licences = [];
+        try {
+          const licRes = await fetch(`${API_BASE}/admin/licences`, {
+            headers: {
+              'X-User-Id': currentUser.id || 1,
+              'X-User-Role': 'admin'
+            }
+          });
+          if (licRes.ok) {
+            licences = await licRes.json();
+          }
+        } catch (e) {
+          console.warn("Licences fetch error:", e);
+        }
+
+        const customers = users.filter(u => u.role !== 'admin' && u.role !== 'ROLE_ADMIN');
+
+        if (customers.length === 0) {
+          usersGrid.innerHTML = '<p style="color: var(--text-secondary); padding: 2rem;">No customer accounts registered yet.</p>';
+          return;
+        }
+
+        usersGrid.innerHTML = '';
+        customers.forEach(user => {
+          // Find matching licence
+          const userLic = licences.find(l => l.userId === user.id || (l.userEmail && l.userEmail.toLowerCase() === user.email.toLowerCase()));
+
+          let statusBadge = '<span class="licence-badge not-uploaded" style="font-size:0.75rem;">No Licence</span>';
+          let docPreview = `
+            <div class="no-license-placeholder">
+              <span style="font-size: 1.5rem; margin-bottom: 0.25rem;">ðŸ“„</span>
+              <span>No Document Uploaded</span>
+            </div>
+          `;
+
+          if (userLic) {
+            const badgeClass = userLic.verificationStatus === 'APPROVED' ? 'approved' :
+                              userLic.verificationStatus === 'REJECTED' ? 'rejected' : 'pending';
+            statusBadge = `<span class="licence-badge ${badgeClass}" style="font-size:0.75rem;">${userLic.verificationStatus}</span>`;
+            
+            const fileUrl = `${API_BASE}/admin/licences/${userLic.id}/file?userId=${currentUser.id || 1}&role=admin`;
+            const isPdf = userLic.fileType === 'application/pdf' || userLic.originalFileName.toLowerCase().endsWith('.pdf');
+
+            if (isPdf) {
+              docPreview = `
+                <div style="padding: 1.5rem; text-align:center; background: rgba(255,255,255,0.03); border-radius:8px; border:1px solid var(--border-color);">
+                  <span style="font-size: 2rem; display:block;">ðŸ“•</span>
+                  <div style="font-size: 0.85rem; margin-top:0.5rem; color:var(--text-primary); font-weight:500;">${userLic.originalFileName}</div>
+                  <button class="btn-outline" style="margin-top:0.75rem; padding:0.35rem 0.75rem; font-size:0.8rem;" onclick="window.open('${fileUrl}', '_blank')">View PDF</button>
+                </div>
+              `;
+            } else {
+              docPreview = `
+                <img src="${fileUrl}" alt="Driving Licence" class="license-preview-thumb" onclick="viewUserDoc('${fileUrl}', '${(user.fullName || user.email).replace(/'/g, "\\'")}\\'s Driving Licence')" title="Click to view">
+              `;
+            }
+          }
+
+          usersGrid.innerHTML += `
+            <div class="user-card">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                  <h3>${user.fullName || user.fullname || user.email.split('@')[0]}</h3>
+                  <p>${user.email}</p>
+                </div>
+                ${statusBadge}
+              </div>
+              ${docPreview}
+            </div>
+          `;
+        });
+      } catch (err) {
+        console.error("Failed to render users:", err);
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('currentUser');
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>
+
